@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Video Chat - RAG AI Assistant</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🎥 YouTube Video Chat</h1>
+            <p class="subtitle">Ask questions about any YouTube video using AI</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Video Input Section -->
+            <div class="video-input-section" id="videoInputSection">
+                <div class="input-card">
+                    <label for="videoUrl">YouTube Video URL</label>
+                    <div class="input-group">
+                        <input 
+                            type="text" 
+                            id="videoUrl" 
+                            placeholder="https://www.youtube.com/watch?v=..."
+                            autocomplete="off"
+                        >
+                        <button id="processBtn" class="btn-primary">
+                            <span class="btn-text">Process Video</span>
+                            <span class="btn-loader" style="display: none;">
+                                <div class="spinner"></div>
+                            </span>
+                        </button>
+                    </div>
+                    <div class="status-message" id="statusMessage"></div>
+                </div>
+            </div>
+
+            <!-- Chat Section -->
+            <div class="chat-section" id="chatSection" style="display: none;">
+                <div class="chat-header">
+                    <div class="video-info" id="videoInfo">
+                        <span class="video-badge">📹 Video Ready</span>
+                        <button id="newVideoBtn" class="btn-secondary">New Video</button>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="chatMessages">
+                    <div class="welcome-message">
+                        <div class="welcome-icon">💬</div>
+                        <h3>Ready to chat!</h3>
+                        <p>Ask me anything about this video</p>
+                    </div>
+                </div>
+
+                <div class="chat-input-container">
+                    <div class="chat-input-wrapper">
+                        <input 
+                            type="text" 
+                            id="chatInput" 
+                            placeholder="Ask a question about the video..."
+                            autocomplete="off"
+                        >
+                        <button id="sendBtn" class="btn-send">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
