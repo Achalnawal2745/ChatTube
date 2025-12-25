@@ -10,6 +10,7 @@ import os
 from dotenv import load_dotenv
 import re
 from urllib.parse import urlparse, parse_qs
+from sentence_transformers import SentenceTransformer
 
 # Load environment variables
 load_dotenv()
@@ -17,12 +18,17 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
-# Configure Gemini API
+# Configure Gemini API (only for chat, not embeddings)
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 if not GEMINI_API_KEY:
     raise ValueError("GEMINI_API_KEY not found in environment variables. Please create a .env file with your API key.")
 
 client = genai.Client(api_key=GEMINI_API_KEY)
+
+# Initialize Sentence Transformer for local embeddings
+print("Loading Sentence Transformer model...")
+embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
+print("Model loaded successfully!")
 
 # Initialize ChromaDB
 chroma_client = chromadb.Client(Settings(
@@ -156,20 +162,10 @@ def process_video():
         metadatas = [{'start_time': chunk['start_time']} for chunk in chunks]
         ids = [f"chunk_{i}" for i in range(len(chunks))]
         
-        # Use Gemini for embeddings
-        embeddings = []
-        import time
-        for i, text in enumerate(texts):
-            # Add delay to avoid rate limiting (5 RPM = 12 seconds between requests)
-            if i > 0:
-                time.sleep(13)  # Wait 13 seconds between requests for safety
-            
-            response = client.models.embed_content(
-                model='models/text-embedding-004',
-                contents=text
-            )
-            embeddings.append(response.embeddings[0].values)
-            print(f"Processed chunk {i+1}/{len(texts)}")  # Progress indicator
+        # Use local Sentence Transformer for embeddings (MUCH faster!)
+        print(f"Generating embeddings for {len(texts)} chunks...")
+        embeddings = embedding_model.encode(texts, show_progress_bar=True).tolist()
+        print("Embeddings generated successfully!")
         
         collection.add(
             embeddings=embeddings,
@@ -213,12 +209,8 @@ def chat():
         collection_name = video_sessions[video_id]['collection_name']
         collection = chroma_client.get_collection(collection_name)
         
-        # Generate query embedding
-        query_response = client.models.embed_content(
-            model='models/text-embedding-004',
-            contents=question
-        )
-        query_embedding = query_response.embeddings[0].values
+        # Generate query embedding using local model (instant!)
+        query_embedding = embedding_model.encode([question])[0].tolist()
         
         # Retrieve relevant chunks
         results = collection.query(
