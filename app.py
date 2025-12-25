@@ -14,7 +14,7 @@ from urllib.parse import urlparse, parse_qs
 # Load environment variables
 load_dotenv()
 
-app = Flask(__name__, static_folder='.', static_url_path='')
+app = Flask(__name__)
 CORS(app)
 
 # Configure Gemini API
@@ -269,12 +269,5 @@ def health():
     return jsonify({'status': 'healthy'})
 
 
-@app.route('/')
-def index():
-    """Serve the frontend"""
-    return app.send_static_file('index.html')
-
-
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=False)
+    app.run(debug=True, port=5000)

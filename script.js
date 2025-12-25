@@ -1,5 +1,5 @@
-// API Configuration - works for both local and production
-const API_BASE_URL = window.location.origin + '/api';
+// API Configuration
+const API_BASE_URL = 'http://localhost:5000/api';
 
 // State
 let currentVideoId = null;
